@@ -1,0 +1,9 @@
+max_width = 126
+use_small_heuristics = "Max"
+#imports_granularity = "Crate"
+#group_imports = "StdExternalCrate"
+#format_macro_matchers = true
+#condense_wildcard_suffixes = true
+
+#wrap_comments = true
+#normalize_comments = true

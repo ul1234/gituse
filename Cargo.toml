@@ -1,0 +1,30 @@
+[package]
+name = "gituse"
+version = "1.0.0"
+authors = ["ul1234"]
+edition = "2018"
+exclude = [
+    "images/*",
+]
+description = "A simple Git tui client based on keyboard shortcuts"
+license = "GPL-3.0"
+resolver = "2"
+
+documentation = "https://github.com/ul1234/verco"
+repository = "https://github.com/ul1234/verco"
+readme = "README.md"
+keywords = ["version-control", "git"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "verco"
+path = "src/main.rs"
+
+[dependencies]
+bounded-vec-deque = "0.1.1"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3", features = ["winbase", "winuser", "consoleapi", "processenv", "handleapi"] }
