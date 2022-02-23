@@ -10,7 +10,7 @@ checksum = "2225b558afc76c596898f5f1b3fc35cfce0eb1b13635cbd7d1b2a7177dc10ccd"
 
 [[package]]
 name = "gituse"
-version = "2.2.0"
+version = "1.0.0"
 dependencies = [
  "bounded-vec-deque",
  "libc",

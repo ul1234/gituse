@@ -10,14 +10,14 @@ description = "A simple Git tui client based on keyboard shortcuts"
 license = "GPL-3.0"
 resolver = "2"
 
-documentation = "https://github.com/ul1234/verco"
-repository = "https://github.com/ul1234/verco"
+documentation = "https://github.com/ul1234/gituse"
+repository = "https://github.com/ul1234/gituse"
 readme = "README.md"
 keywords = ["version-control", "git"]
 categories = ["command-line-utilities"]
 
 [[bin]]
-name = "verco"
+name = "gituse"
 path = "src/main.rs"
 
 [dependencies]
