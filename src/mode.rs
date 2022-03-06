@@ -250,12 +250,12 @@ impl Output {
         let half_height = available_height / 2;
 
         self.scroll = match key {
-            Key::Down | Key::Char('j') => self.scroll + 1,
-            Key::Up | Key::Char('k') => self.scroll.saturating_sub(1),
-            Key::Ctrl('h') | Key::Home => 0,
-            Key::Ctrl('e') | Key::End => usize::MAX,
-            Key::Ctrl('d') | Key::PageDown => self.scroll + half_height,
-            Key::Ctrl('u') | Key::PageUp => self.scroll.saturating_sub(half_height),
+            Key::Down => self.scroll + 1,
+            Key::Up => self.scroll.saturating_sub(1),
+            Key::Home => 0,
+            Key::End => usize::MAX,
+            Key::PageDown => self.scroll + half_height,
+            Key::PageUp => self.scroll.saturating_sub(half_height),
             _ => self.scroll,
         };
 

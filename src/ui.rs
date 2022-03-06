@@ -1,5 +1,6 @@
 use std::fmt;
 
+use crate::mode::diff::{DIFF_FORMAT_FILE_HEADER_CONTENT, DIFF_FORMAT_FILE_HEADER_LINE, DIFF_FORMAT_LINE_HEADER};
 use crate::mode::{Filter, Output, ReadLine, SelectMenu};
 
 pub const HEADER_LINE_COUNT: usize = 2;
@@ -236,7 +237,7 @@ impl Drawer {
         line_count
     }
 
-    pub fn diff(&mut self, output: &Output) -> usize {
+    pub fn _diff(&mut self, output: &Output) -> usize {
         let tab_bytes = [b' '; 4];
         let mut utf8_buf = [0; 4];
 
@@ -253,6 +254,70 @@ impl Drawer {
             }
 
             for c in line.chars() {
+                match c {
+                    '\t' => {
+                        self.buf.extend_from_slice(&tab_bytes);
+                        x += tab_bytes.len();
+                    }
+                    _ => {
+                        let bytes = c.encode_utf8(&mut utf8_buf).as_bytes();
+                        self.buf.extend_from_slice(bytes);
+                        x += 1;
+                    }
+                }
+
+                if x >= self.viewport_size.0 as _ {
+                    x -= self.viewport_size.0 as usize;
+                    line_count += 1;
+                }
+            }
+
+            self.next_line();
+
+            line_count += 1;
+            if line_count + 1 >= self.viewport_size.1 as _ {
+                break;
+            }
+        }
+
+        set_foreground_color(&mut self.buf, Color::White);
+
+        line_count
+    }
+
+    pub fn diff_format(&mut self, output: &Output) -> usize {
+        let tab_bytes = [b' '; 4];
+        let mut utf8_buf = [0; 4];
+
+        set_background_color(&mut self.buf, Color::Black);
+
+        let mut line_count = 0;
+        for line in output.lines_from_scroll() {
+            let mut x = 0;
+            let mut num_headers = 0;
+
+            if line.starts_with(DIFF_FORMAT_FILE_HEADER_LINE) {
+                set_foreground_color(&mut self.buf, Color::DarkYellow);
+                let bytes = '-'.encode_utf8(&mut utf8_buf).as_bytes();
+                for _ in 0..self.viewport_size.0 {
+                    self.buf.extend_from_slice(bytes);
+                }
+                num_headers = DIFF_FORMAT_FILE_HEADER_LINE.len();
+            } else if line.starts_with(DIFF_FORMAT_FILE_HEADER_CONTENT) {
+                set_foreground_color(&mut self.buf, Color::DarkYellow);
+                num_headers = DIFF_FORMAT_FILE_HEADER_CONTENT.len();
+            } else if line.starts_with(DIFF_FORMAT_LINE_HEADER) {
+                set_foreground_color(&mut self.buf, Color::DarkMagenta);
+                num_headers = DIFF_FORMAT_FILE_HEADER_CONTENT.len();
+            } else {
+                match line.chars().next() {
+                    Some('+') => set_foreground_color(&mut self.buf, Color::DarkGreen),
+                    Some('-') => set_foreground_color(&mut self.buf, Color::DarkRed),
+                    _ => set_foreground_color(&mut self.buf, Color::White),
+                }
+            }
+
+            for c in line.chars().skip(num_headers) {
                 match c {
                     '\t' => {
                         self.buf.extend_from_slice(&tab_bytes);
